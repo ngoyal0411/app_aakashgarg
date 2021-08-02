@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "eMXvvlxYlhTS1zngyerIVYk+QhdD4Q8l2ZVcOWmySXTLd74SA2MEsbCzVWSqLh0tPDBpIMkf1xJ9Dg4hE3HLOg==",
+  "success": true,
+  "projectFilePath": "D:\\NAGP\\DevOps&AdvancedMicroservices\\Final Assignment\\app_aakashgarg\\WebApplication4\\WebApplication4.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\aakashgarg\\.nuget\\packages\\microsoft.visualstudio.azure.containers.tools.targets\\1.9.5\\microsoft.visualstudio.azure.containers.tools.targets.1.9.5.nupkg.sha512"
+  ],
+  "logs": []
+}
