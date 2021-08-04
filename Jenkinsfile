@@ -4,9 +4,17 @@ pipeline {
     environment {
         scannerHome = tool name: 'sonar_scanner_dotnet'
         username = 'aakashgarg'
-		    registry = 'iaakashgarg/app-test'
-		    properties = null
-		    docker_port = "${env.BRANCH_NAME == "master" ? "7200" : "7300"}"
+        registry = 'iaakashgarg/app-test'
+        properties = null
+        docker_port = "${env.BRANCH_NAME == "master" ? "7200" : "7300"}"
+	k8_port = "${env.BRANCH_NAME == "master" ? "30157" : "30158"}"
+	CONTAINER_ID = null
+	project_id = 'nagp-aakashgarg'
+	cluster_name = 'kubernetes-cluster-aakashgarg'
+	location = 'us-central1-c'
+	credentials_id = 'GCP_aakashgarg'
+	deployment_name = "app-${username}-${BRANCH_NAME}-deployment"
+	service_name = "app-${username}-${BRANCH_NAME}-service"
     }
     
     tools {
@@ -84,23 +92,28 @@ pipeline {
 		stage('Docker Image') {
 			steps {
 				echo "Create Docker Image"
-				bat "dotnet publish -c Release"
-				bat "docker build -t i-${username}-${BRANCH_NAME} --no-cache -f Dockerfile ."
-				bat "docker tag i-${username}-${BRANCH_NAME} ${registry}:${BUILD_NUMBER}"
+				bat "docker build -t i-${username}-${BRANCH_NAME}:${BUILD_NUMBER} --no-cache -f Dockerfile ."
+				bat "docker tag i-${username}-${BRANCH_NAME}:${BUILD_NUMBER} ${registry}:${BUILD_NUMBER}"
+				bat "docker tag i-${username}-${BRANCH_NAME}:${BUILD_NUMBER} ${registry}:latest"
 			}
 		}
 		
 		stage('Containers') {
 			parallel {
 				stage('PreContainerCheck') {
-					steps {
-						bat '''
-						CONTAINER_ID = $(docker ps -a | grep ${docker_port} | cut -d " " -f 1)
-						if [ $CONTAINER_ID ]
-						then
-							docker rm -f $CONTAINER_ID
-						'''
-					}
+					environment {
+				        CONTAINER_ID = "${bat(script:"docker ps -a --filter publish=${docker_port} --format {{.ID}}", returnStdout: true).trim().readLines().drop(1).join("")}" 
+				    }
+				    steps {
+                        echo "Running pre container check"
+				        script {
+				        if(env.CONTAINER_ID != null) {
+				            echo "Removing container: ${env.CONTAINER_ID}"
+				            bat "docker rm -f ${env.CONTAINER_ID}"        
+				        }
+				   }
+                                   
+                    }
 				}
 				stage('PushtoDockerHub') {
 					steps {
@@ -108,6 +121,7 @@ pipeline {
 				
 						withDockerRegistry([credentialsId: 'DockerHub', url: ""]) {
 							bat "docker push ${registry}:${BUILD_NUMBER}"
+							bat "docker push ${registry}:latest"
 						}
 					}
 				}
@@ -118,6 +132,16 @@ pipeline {
 			steps {
 				echo "Docker Deployment"
 				bat "docker run --name c-${username}-${BRANCH_NAME} -d -p ${docker_port}:80 ${registry}:${BUILD_NUMBER}"
+			}
+		}
+	    
+	    stage('Kubernetes Deployment') {
+			steps {
+				echo "Deploying to Kubernetes"
+				powershell "(Get-Content deployment.yaml).Replace('{{deployment}}', '${deployment_name}').Replace('{{service}}', '${service_name}').Replace('{{port}}', '${k8_port}') | set-content deployment.yaml"
+				withKubeConfig([credentialsId: env.credentials_id, clusterName: env.cluster_name, namespace: 'kubernetes-cluster-aakashgarg', projectId: env.project_id, location: env.location ]) {
+				bat "kubectl apply -f deployment.yaml"
+				}
 			}
 		}
 		
