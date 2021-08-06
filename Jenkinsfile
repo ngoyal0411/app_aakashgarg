@@ -5,16 +5,11 @@ pipeline {
         scannerHome = tool name: 'sonar_scanner_dotnet'
         username = 'aakashgarg'
         registry = 'iaakashgarg/app-test'
-        properties = null
         docker_port = "${env.BRANCH_NAME == "master" ? "7200" : "7300"}"
-	k8_port = "${env.BRANCH_NAME == "master" ? "30157" : "30158"}"
-	CONTAINER_ID = null
-	project_id = 'nagp-aakashgarg'
-	cluster_name = 'kubernetes-cluster-aakashgarg'
-	location = 'us-central1-c'
-	credentials_id = 'GCP_aakashgarg'
-	deployment_name = "app-${username}-${BRANCH_NAME}-deployment"
-	service_name = "app-${username}-${BRANCH_NAME}-service"
+		k8_port = "${env.BRANCH_NAME == "master" ? "30157" : "30158"}"
+		CONTAINER_ID = null
+		deployment_name = "app-${username}-${BRANCH_NAME}-deployment"
+		service_name = "app-${username}-${BRANCH_NAME}-service"
     }
     
     tools {
