@@ -8,7 +8,7 @@ metadata:
 spec:
     replicas: 4
     selector:
-        matchlabels:
+        matchLabels:
             app: app-aakashgarg
     template:
         metadata:
