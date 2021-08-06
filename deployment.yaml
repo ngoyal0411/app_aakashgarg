@@ -1,40 +1,40 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-	name: <deployment>
-	namespace: kubernetes-cluster-aakashgarg
-	labels:
-		app: app-aakashgarg
+    name: {{deployment}}
+    namespace: kubernetes-cluster-aakashgarg
+    labels:
+        app: app-aakashgarg
 spec:
-	replicas: 4
-	selector:
-		matchlabels:
-			app: app-aakashgarg
-	template:
-		metadata:
-			labels:
-				app: app-aakashgarg
-		spec:
-			containers:
-				-name: app-aakashgarg
-				image: iaakashgarg/app-test:latest
-				ports:
-					-name: http
-					containerPort: 80
-					protocol: TCP
+    replicas: 4
+    selector:
+        matchlabels:
+            app: app-aakashgarg
+    template:
+        metadata:
+            labels:
+                app: app-aakashgarg
+        spec:
+            containers:
+                -name: app-aakashgarg
+                image: iaakashgarg/app-test:latest
+                ports:
+                    -name: http
+                    containerPort: 80
+                    protocol: TCP
 					
 ---
 apiVersion: v1
 kind: Service
 metadata:
-	name: <service>
-	namespace: kubernetes-cluster-aakashgarg
+    name: {{service}}
+    namespace: kubernetes-cluster-aakashgarg
 spec:
-	type: NodePort
-	selector:
-		app: app-aakashgarg
-	ports:
-		-protocol: TCP
-		nodePort: {{port}}
-		port: 80
-		targetPort: 80
+    type: NodePort
+    selector:
+        app: app-aakashgarg
+    ports:
+        -protocol: TCP
+        nodePort: {{port}}
+        port: 80
+        targetPort: 80
