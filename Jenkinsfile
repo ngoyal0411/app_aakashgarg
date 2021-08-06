@@ -6,14 +6,14 @@ pipeline {
         username = 'aakashgarg'
         registry = 'iaakashgarg/app-test'
         docker_port = "${env.BRANCH_NAME == "master" ? "7200" : "7300"}"
-		k8_port = "${env.BRANCH_NAME == "master" ? "30157" : "30158"}"
-		CONTAINER_ID = null
-		deployment_name = "app-${username}-${BRANCH_NAME}-deployment"
-		service_name = "app-${username}-${BRANCH_NAME}-service"
+	k8_port = "${env.BRANCH_NAME == "master" ? "30157" : "30158"}"
+	CONTAINER_ID = null
+	deployment_name = "app-${username}-${BRANCH_NAME}-deployment"
+	service_name = "app-${username}-${BRANCH_NAME}-service"
     }
     
     tools {
-		  msbuild 'MSBuild'
+	   msbuild 'MSBuild'
 	  }
 
     
@@ -48,13 +48,13 @@ pipeline {
         
         stage('Code build') {
             steps {
-				// Cleans the output of a project
+		// Cleans the output of a project
                 echo "Clean previous build"
                 bat "dotnet clean WebApplication4\\WebApplication4.csproj"
 				
-				// Builds the project and its dependencies
-				echo "Start Building code"
-				bat 'dotnet build WebApplication4\\WebApplication4.csproj -c Release -o "WebApplication4/app/build"'
+		// Builds the project and its dependencies
+		echo "Start Building code"
+		bat 'dotnet build WebApplication4\\WebApplication4.csproj -c Release -o "WebApplication4/app/build"'
             }
         }
 		
