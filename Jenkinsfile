@@ -139,9 +139,8 @@ pipeline {
 			steps {
 				echo "Deploying to Kubernetes"
 				powershell "(Get-Content deployment.yaml).Replace('{{deployment}}', '${deployment_name}').Replace('{{service}}', '${service_name}').Replace('{{port}}', '${k8_port}') | set-content deployment.yaml"
-				withKubeConfig([credentialsId: env.credentials_id, clusterName: env.cluster_name, namespace: 'kubernetes-cluster-aakashgarg', projectId: env.project_id, location: env.location ]) {
 				bat "kubectl apply -f deployment.yaml"
-				}
+				
 			}
 		}
 		
