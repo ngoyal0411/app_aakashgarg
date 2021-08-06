@@ -5,20 +5,15 @@ pipeline {
         scannerHome = tool name: 'sonar_scanner_dotnet'
         username = 'aakashgarg'
         registry = 'iaakashgarg/app-test'
-        properties = null
         docker_port = "${env.BRANCH_NAME == "master" ? "7200" : "7300"}"
 	k8_port = "${env.BRANCH_NAME == "master" ? "30157" : "30158"}"
 	CONTAINER_ID = null
-	project_id = 'nagp-aakashgarg'
-	cluster_name = 'kubernetes-cluster-aakashgarg'
-	location = 'us-central1-c'
-	credentials_id = 'GCP_aakashgarg'
 	deployment_name = "app-${username}-${BRANCH_NAME}-deployment"
 	service_name = "app-${username}-${BRANCH_NAME}-service"
     }
     
     tools {
-		  msbuild 'MSBuild'
+	   msbuild 'MSBuild'
 	  }
 
     
@@ -53,13 +48,13 @@ pipeline {
         
         stage('Code build') {
             steps {
-				// Cleans the output of a project
+		// Cleans the output of a project
                 echo "Clean previous build"
                 bat "dotnet clean WebApplication4\\WebApplication4.csproj"
 				
-				// Builds the project and its dependencies
-				echo "Start Building code"
-				bat 'dotnet build WebApplication4\\WebApplication4.csproj -c Release -o "WebApplication4/app/build"'
+		// Builds the project and its dependencies
+		echo "Start Building code"
+		bat 'dotnet build WebApplication4\\WebApplication4.csproj -c Release -o "WebApplication4/app/build"'
             }
         }
 		
@@ -139,9 +134,8 @@ pipeline {
 			steps {
 				echo "Deploying to Kubernetes"
 				powershell "(Get-Content deployment.yaml).Replace('{{deployment}}', '${deployment_name}').Replace('{{service}}', '${service_name}').Replace('{{port}}', '${k8_port}') | set-content deployment.yaml"
-				withKubeConfig([credentialsId: env.credentials_id, clusterName: env.cluster_name, namespace: 'kubernetes-cluster-aakashgarg', projectId: env.project_id, location: env.location ]) {
 				bat "kubectl apply -f deployment.yaml"
-				}
+				
 			}
 		}
 		

@@ -8,7 +8,7 @@ metadata:
 spec:
     replicas: 4
     selector:
-        matchlabels:
+        matchLabels:
             app: app-aakashgarg
     template:
         metadata:
@@ -16,12 +16,12 @@ spec:
                 app: app-aakashgarg
         spec:
             containers:
-                -name: app-aakashgarg
-                image: iaakashgarg/app-test:latest
-                ports:
-                    -name: http
-                    containerPort: 80
-                    protocol: TCP
+            - name: app-aakashgarg
+              image: iaakashgarg/app-test:latest
+              ports:
+              - name: http
+                containerPort: 80
+                protocol: TCP
 
 ---
 apiVersion: v1
@@ -34,7 +34,7 @@ spec:
     selector:
         app: app-aakashgarg
     ports:
-        -protocol: TCP
-        nodePort: {{port}}
-        port: 80
-        targetPort: 80
+    - protocol: TCP
+      nodePort: {{port}}
+      port: 80
+      targetPort: 80
