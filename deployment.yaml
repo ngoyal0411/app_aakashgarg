@@ -17,7 +17,7 @@ spec:
         spec:
             containers:
             - name: app-aakashgarg
-              image: iaakashgarg/app-test:latest
+              image: iaakashgarg/app-aakashgarg:latest
               ports:
               - name: http
                 containerPort: 80
