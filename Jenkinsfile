@@ -60,6 +60,7 @@ pipeline {
             }
         }
 		
+		/*
 		stage('Stop Sonarqube Analysis') {
 			when {
 				expression {
@@ -73,7 +74,7 @@ pipeline {
                 }
             }
         }
-		
+		*/
 		stage('Release artifact') {
 			when {
 				expression {
