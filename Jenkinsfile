@@ -12,9 +12,11 @@ pipeline {
 	service_name = "app-${username}-${BRANCH_NAME}-service"
     }
     
+	/*
     tools {
 	   msbuild 'MSBuild'
 	  }
+	  */
 
     
     options {
